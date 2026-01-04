@@ -1,154 +1,166 @@
 #include<iostream>
+#include<vector>
+#include<string>
 using namespace std;
-int i=0;
-class BankAccount{
+
+class account {
 	private:
-		int acno;
+		int accountNo;
 		string name;
 		double balance;
 	public:
-		void createaccount(long int no)
-		{
-			acno=no;
-			cout<<"enter account holder name:";
+		account(int accNo, string accName, double bal=0.0){
+			accountNo=accNo;
+			name=accName;
+			balance=bal;
+		}
+		int getAccountNo(){
+			return accountNo;
+		}
+		string getName(){
+			return name;
+		}
+		double getBalance(){
+			return balance;
+		}
+		void credit(double amount){
+			if(amount<0){
+				cout<<"Invalid credit amount!"<<endl;
+				return;
+			}
+
+			balance+=amount;
+			cout<<"Amount credited successfuly."<<endl;
+		}
+		void debit(double amount){
+			if(amount<=0 || amount>balance){
+				cout<<"Invalid of insufficient balance!"<<endl;
+				return;
+			}
+			balance-=amount;
+			cout<<"Amount debited successfully. "<<endl;
+			
+		}
+		void display(){
+			cout<<"-----------------------------------------------"<<endl;
+			cout<<"Account Number : "<<accountNo<<endl;
+			cout<<"Account Holder : "<<name<<endl;
+			cout<<"Balance : "<<balance<<endl;
+			cout<<"-----------------------------------------------"<<endl;
+		}
+};
+
+class bank {
+	private:
+		vector<account> accounts;
+		int nextAccountNo;
+
+		
+		int findAccount(int accNo){
+			for(int i=0;i<accounts.size();i++){
+				if(accounts[i].getAccountNo() == accNo){
+					return i;
+				}
+			}
+			return -1;
+		}
+		
+	public:
+		bank() {
+        	nextAccountNo = 125793200;
+		}
+		void createAccount(){
+			string name;
+			cout<<"Ente Account Holder Name : ";
 			cin>>name;
-			balance=0;
-			
+			accounts.push_back(account(nextAccountNo++,name));
+			cout<<"Account created successfully!"<<endl;
+			accounts.back().display();
 		}
-		void credit(double c)
-		{
-			
-			cout<<"----------------------------------"<<endl;
-			cout<<"your account is credited "<<c;
-			balance+=c;
-			cout<<"\navailabe balance "<<balance<<endl;
-			cout<<"----------------------------------"<<endl<<"\n";
-		}
-		void debit(double d)
-		{
-			if(d>balance)
-			{
-				cout<<"----------------------------------"<<endl;
-				cout<<"insufficient amount!\n";
-				cout<<"----------------------------------"<<endl<<"\n";
-				
+		void checkBalance(){
+			int accNo;
+			cout<<"Ente Account Number : ";
+			cin>>accNo;
+			int index = findAccount(accNo);
+			if(index == -1){
+				cout<<"Account not found!"<<endl;
 			}
 			else{
-			cout<<"----------------------------------"<<endl;
-			cout<<"your account is debited "<<d;
-			balance-=d;
-			cout<<"\navailabe balance "<<balance<<endl;
-			cout<<"----------------------------------"<<endl<<"\n";
-		    }
+				accounts[index].display();
+			}
 		}
-		void viewdetails()
-		{
-			cout<<"----------------------------------"<<endl;
-			cout<<"Account Number: "<<acno<<endl;
-			cout<<"Holder Name:"<<name<<endl;
-			cout<<"Balance:"<<balance<<endl;						
-			cout<<"----------------------------------"<<endl<<"\n";
-
+		void creditAmount(){
+			int accNo;
+			double amount;
+			cout<<"Ente Account Number : ";
+			cin>>accNo;
+			int index = findAccount(accNo);
+			if(index == -1){
+				cout<<"Account not found!"<<endl;
+				return;
+			}
+			cout<<"Enter Credit Amount : ";
+			cin>>amount;
+			accounts[index].credit(amount);
 		}
-//		void checkbalance(long int a)
-//		{
-//			for(int j=0;j<i;j++)
-//			{
-//				if(BankAccount.j acno == a)
-//				{
-//					BankAccount[j].viewdetails();
-//				}	
-//			}	
-//		}
+		void debitAmount(){
+			int accNo;
+			double amount;
+			cout<<"Ente Account Number : ";
+			cin>>accNo;
+			int index = findAccount(accNo);
+			if(index == -1){
+				cout<<"Account not found!"<<endl;
+				return;
+			}
+			cout<<"Enter Debit Amount : ";
+			cin>>amount;
+			accounts[index].debit(amount);
+		}
+		void menu(){
+			int choice;
+			do {
+				cout<<"\n=======BANK MANAGEMENT SYSTEM======="<<endl;
+				cout<<"1. Create new account "<<endl;
+				cout<<"2. Check Balance "<<endl;
+				cout<<"3. Credit Amount "<<endl;
+				cout<<"4. Debit amount "<<endl;
+				cout<<"5. Exit "<<endl;
+				cout<<"Enter choice : ";
+				cin>>choice;
+				
+				switch(choice){
+					case 1:{
+						createAccount();
+						break;
+					}
+					case 2:{
+						checkBalance();
+						break;
+					} 
+					case 3:{
+						creditAmount();
+						break;
+					}
+					case 4:{
+						debitAmount();
+						break;
+					}
+					case 5:{
+						cout<<"Thank you for using Bank System!"<<endl;
+						break;
+					}
+					default: cout<<"Invalid choice!"<<endl;
+				}
+				
+			}while(choice != 5);
+		}
+	
 };
-int main()
-{
-	BankAccount a[100];
-	int loop=1,x,ac,j=0;
-	int an=125793200;
-	double amount=0;
-	while(loop == 1)
-	{
-		cout<<"1.Create New Account"<<endl;
-		cout<<"2.Check Bank balance"<<endl;
-		cout<<"3.Credit Amount"<<endl;
-		cout<<"4.Debit Amount"<<endl;
-		cout<<"5.Exit"<<endl;
-		cout<<"Enter your option(1,2,3,4,5):";
-		cin>>x;
-		if(x == 1)
-		{
-			a[i].createaccount(an+i);
-			cout<<"New account is created "<<endl;
-			a[i].viewdetails();
-			i++;
-		}
-		else if(x == 2)
-		{
-			cout<<"Enter your Account Number:";
-			cin>>ac;
-			for(j=0;j<i;j++)
-			{
-				if(an+j == ac)
-				{
-					a[j].viewdetails();
-					break;
-				}
-			}
-			if(j == i)
-			{
-				cout<<"----------------------------------"<<endl;
-				cout<<"Your Account Number is invalid"<<endl;
-				cout<<"----------------------------------"<<endl<<"\n";
-			}
 
-			
-		}
-		else if(x == 3)
-		{
-			cout<<"Enter your Account Number:";
-			cin>>ac;
-			for(int j=0;j<i;j++)
-			{
-				if(an+j == ac)
-				{
-					cout<<"Enter your credit amount:";
-					cin>>amount;
-					a[j].credit(amount);
-					break;
-				}
-			}
-			if(j == i)
-			{
-				cout<<"----------------------------------"<<endl;
-				cout<<"Your Account Number is invalid"<<endl;
-				cout<<"----------------------------------"<<endl<<"\n";
-			}
-		}
-		else if(x == 4)
-		{
-			cout<<"Enter your Account Number:";
-			cin>>ac;
-			for(int j=0;j<i;j++)
-			{
-				if(an+j == ac)
-				{
-					cout<<"Enter your debit amount:";
-					cin>>amount;
-					a[j].debit(amount);
-					break;
-				}
-			}
-			if(j == i)
-			{
-				cout<<"----------------------------------"<<endl;
-				cout<<"Your Account Number is invalid"<<endl;
-				cout<<"----------------------------------"<<endl<<"\n";
-			}
-		}
-		else if(x == 5)
-		{
-			loop=0;
-		}
-	}
+int main(){
+	bank Bank;
+	Bank.menu();
+	
+	return 0;
 }
